@@ -34,46 +34,45 @@ echo.
 rem set pfxfile=mytest
 ::
 :pfxstart
-set /p INPUT=Enter name and path of the CSR file : 
-IF  NOT (%INPUT%)==() (
-set pfxfile=%INPUT%
-) ELSE (
-echo "bad input"
+set /p pfxfile=Enter name and path of the CSR file : %pfxfile%
+IF "%pfxfile%"=="" goto Errorpfxstart
+goto rsa
+:Errorpfxstart
+echo Bad Input!!
 goto pfxstart
-)
+:rsa
 openssl genrsa -out %pfxfile%.rsa 2048 
 openssl rsa -in %pfxfile%.rsa -pubout > %pfxfile%.pub
 :country
-set country=US
-set /p INP3=Country Name (2 letter code) [US]:  
-IF  NOT (%INP3%)==() (
-set country=%INP3%
-) ELSE (
-echo. " bad input"
+rem set country=US
+set /p country=Country Name (2 letter code) [%country%]:  
+IF "%country%"=="" goto ErrorCountry
+goto state
+:ErrorCountry
+echo Bad Input!!
 goto country
-)
 :state
 rem set state=Some-State
-set /p INP4=State or Province Name (full name) []: 
-IF  NOT (%INP4%)==() (
-set state=%INP4%
-) ELSE (
-echo. " bad input"
+set /p state=State or Province Name (full name) [%state%]: 
+IF "%state%"=="" goto ErrorState
+goto city
+:ErrorState
+echo Bad input!!
 goto state
 )
 :city
 rem set city=Denver
-set /p INP5=Locality Name (eg, city) []:  
-IF  NOT (%INP5%)==() (
-set city=%INP5%
-) ELSE (
-echo. " bad input"
+set /p city=Locality Name (eg, city) [%city%]:  
+IF "%city%"=="" goto ErrorCity
+goto orgname
+:ErrorCity
+echo Bad Input!!
 goto city
 )
 :orgname
 rem set orgname=Rocket Software
-set orgname=
-SET /P orgname=Organization Name (eg, company) []: 
+rem set orgname=
+SET /P orgname=Organization Name (eg, company) [%orgname%]: 
 IF "%orgname%"=="" goto ErrorOrgname
 goto unit
 :ErrorOrgname
@@ -81,54 +80,51 @@ echo Bad Input!!
 goto orgname
 :unit
 rem set unit=U2 Lab
-set /p unit=Organizational Unit Name (eg, section) []: 
+set /p unit=Organizational Unit Name (eg, section) [%unit%]: 
 IF  "%unit%"=="" goto ErrorUnit
 goto domname
 :ErrorUnit
-echo " bad input"
+echo Bad input!!
 goto unit
 )
 :domname
 rem set domname=den-l-nk01.rocketsoftware.com
-set /p INP8=Common Name (e.g. server Fully Qualified Domain Name) []:  
-IF  NOT (%INP8%)==() (
-set domname=%INP8%
-) ELSE (
-echo. " bad input"
+set /p domname=Common Name (e.g. server Fully Qualified Domain Name) [%domname%]:  
+IF  "%domname%"=="" goto ErrorDomname
+goto email
+:ErrorDomname
+echo Bad input!!
 goto domname
-)
 :email
 rem set email=nkesic@rs.com
-set /p INP9=Email Address []:
-IF  NOT (%INP9%)==() (
-set email=%INP9%
-) ELSE (
-echo. " bad input"
+set /p email=Email Address [%email%]:
+IF  "%email%"=="" goto ErrorEmail
+goto algoIN
+:ErrorEmail
+echo Bad input!!
 goto email
-)
 :algoIN
 rem set algo=sha256
-set /p INP12=Sha1 or sha2 type certificate (sha1/sha2):
-IF  NOT (%INP12%)==() (
-set algoIN=%INP12%
-) ELSE (
-echo. " bad input"
-goto algoIN
-)
+set /p algoIN=Sha1 or sha2 type certificate (sha1/sha2): %algoIN%
+IF  "%algoIN%"=="" goto ErrorAlgoIN
 IF %algoIN%==sha2 (
 set algo=sha256
 ) ELSE (
-set algo=%INP12%
+set algo=%algoIN%
 )
-:age
-set age=365
-set /p INP10=Certificate Age limit [365]:
-IF  NOT %INP10%==() (
-set age=%inp10%
-) ELSE (
-echo. " bad input"
 goto age
-)
+:ErrorAlgoIN
+echo Bad input!!
+goto algoIN
+:age
+rem set age=365
+set /p age=Certificate Age limit [%age%]:
+IF  "%age%"=="" goto ErrorAge
+goto nnext
+:ErrorAge
+echo Bad input!!
+goto age
+:nnext
 echo.
 pause
 echo. 
