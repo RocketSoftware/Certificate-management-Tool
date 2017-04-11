@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxconv6
+: rem name pfxconv6
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -27,13 +27,16 @@ echo.  View PFX File Contents
 echo. ++++++++++++++++++++++++
 echo.      
 :
-set /p INP1=Enter name of the PFX file :  
-IF  NOT (%INP1%)==() (
-set pfxfile=%INPUT%
-) ELSE (
-echo " bad input"
-)
-openssl pkcs12 -info -in %INP1% 
+:pfxconv6
+set /p pfxfile=Enter name of the PFX file : %pfxfile%
+IF "%pfxfile%"=="" goto Errorpfxconv6
+goto nnext
+:Errorpfxconv6
+echo Bad Input!!
+goto pfxconv6
+:
+:nnext
+openssl pkcs12 -info -in %pfxfile% 
 :
 echo.
 SET /P M= Any key to exit : 
