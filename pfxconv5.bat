@@ -147,7 +147,7 @@ echo Common Name = %domname%
 echo Email Adress = %email%
 echo Algorithm = %algo%
 echo Certificate Age = %age%
-echo Private Key password = %pvtPass%
+rem echo Private Key password = %pvtPass%
 echo.
 :
 echo                 If list above is ok, hit (y) or (n) to go back!
