@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxconv3
+: rem name pfxconv3
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -27,33 +27,41 @@ echo.  PEM Server Certificate and Private Key to PFX
 echo. +++++++++++++++++++++++++++++++++++++++++++++++
 echo.      
 :
-set /p INP1=Enter name of the PEM Certificate file :  
-IF  NOT (%INP1%)==() (
-set pfxfile=%INPUT%
-) ELSE (
-echo " bad input"
-)
-set /p INP2=Enter name of the Private Key file :  
-IF  NOT (%INP2%)==() (
-set pfxfile=%INPUT%
-) ELSE (
-echo " bad input"
-)
-set /p INP3=Enter name of the CAfile file :  
-IF  !%1==! (
-set INP3=%INP1%
-) ELSE (
-echo " bad input"
-)
-set /p INP4=Enter name for the PFX file :  
-IF  NOT (%INP4%)==() (
-set rootfile=%INP1%
-) ELSE (
-echo " bad input"
-)
-openssl pkcs12 -export -out %INP4% -inkey %INP2% -in %INP1% -cacerts -in %INP3% 
+:pfxconv3
+set /p pemfile=Enter name of the PEM Certificate file : %pemfile%
+IF "%pemfile%"=="" goto ErrorpemFile
+goto pvtfile
+:ErrorpemFile
+echo Bad Input!!
+goto pfxconv3
+:
+:pvtfile
+set /p pvtfile=Enter name of the Private Key file : %pvtfile%
+IF "%pvtfile%"=="" goto ErrorpvtFile
+goto cafile
+:ErrorpvtFile
+echo Bad Input!!
+goto pvtfile
+:
+:cafile
+set /p cafile=Enter name of the CAfile file :  
+IF "%cafile%"=="" goto ErrorcaFile
+goto pfxfile
+:ErrorcaFile
+set cafile=%pemfile%
+:
+:pfxfile
+set /p pfxfile=Enter name for the PFX file :  
+IF "%pfxfile%"=="" goto ErrorpfxFile
+goto nnext
+:ErrorpfxFile
+echo Bad Input!!
+goto pfxfile
+:
+:nnext
+openssl pkcs12 -export -out %pfxfile% -inkey %pvtfile% -in %pemfile% -cacerts -in %cafile% 
 echo.
-dir /B %INP4%*
+dir /B %pfxfile%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
 EOF
