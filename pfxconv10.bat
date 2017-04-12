@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxconv10
+: rem name pfxconv10
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -27,27 +27,18 @@ echo.  View Java Keystore Contents
 echo. +++++++++++++++++++++++++++++
 echo.      
 :
-::::scertmgr.cmd
-::set OPENSSL_CONF=c:\OpenSSL-Win32\openssl.cnf
-::set JRE_HOME=C:\Program Files\Java\jre1.8.0_25
-::set PATH=%JRE_HOME%\bin;%PATH%
+:jksName
+set /p jksname=Enter name for the Java Key Store : %jksname%
+IF "%jksname%"=="" goto ErrorjksName
+goto nnext
+:ErrorjksName
+echo Bad Input!!
+goto jksName
 :
-::set /p INP4=Enter name for the PFX file :  
-::IF  NOT (%INP4%)==() (
-::set rootfile=%INP1%
-::) ELSE (
-::echo " bad input"
-::)
-set /p INP5=Enter name for the Java Key Store :  
-IF  NOT (%INP5%)==() (
-set jksfile=%INPUT%
-) ELSE (
-echo " bad input"
-)
-::::keytool -v -importkeystore -srckeystore %INP4% -srcstoretype PKCS12 -destkeystore %INP5%.jks -deststoretype JKS
-keytool -list -v -keystore %INP5%
+:nnext
+keytool -list -v -keystore %jksname%
 echo.
-dir /B %INP5%*
+dir /B %jksname%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
 :EOF

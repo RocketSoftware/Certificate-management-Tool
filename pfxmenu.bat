@@ -2,7 +2,7 @@
 :
 : Rocket Software Confidential
 : OCO Source Materials
-: Copyright (C) Rocket Software. 2015
+: Copyright (C) Rocket Software. 2017
 : 
 :
 : @(:) $0 : certificate converter menu 
@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxmenu
+: rem name pfxmenu
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -43,7 +43,7 @@ ECHO.      .  9 - SSL Test Server                                   .
 ECHO.      . 10 - View Java Keystore Contents                       .
 ECHO.      . 11 - Extract entry from Java Keystore into PFX         .
 ECHO.      . 12 - Check PEM certificate expiry                      .
-ECHO.      .  V - This tools Version                                .
+ECHO.      .  V - This tools Version  %PFXTOOL_VERSION%                          .
 ECHO.      .  ? - Help README                                       .
 ECHO.      .  Q - EXIT                                              .
 ECHO.      ..........................................................

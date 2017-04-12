@@ -1,15 +1,17 @@
 @ECHO OFF
 :cls
-set /p INPUT=Enter name and path of the certificate file : 
-IF  NOT (%INPUT%)==() (
-set pfxfile=%INPUT%
-) ELSE (
-echo "bad input"
-)
+:pfxconv12
+set /p pemfile=Enter name and path of the PEM Certificate file : %pemfile%
+IF "%pemfile%"=="" goto ErrorpemFile
+goto :nnext
+:ErrorpemFile
+echo Bad Input!!
+goto pfxconv12
+:
+:nnext
 echo.
-openssl x509 -startdate -noout -in %pfxfile%
-openssl x509 -enddate -noout -in %pfxfile%
-rem openssl x509 -checkend 86400 -in %pfxfile%
+openssl x509 -startdate -noout -in %pemfile%
+openssl x509 -enddate -noout -in %pemfile%
 :EOF
 echo.
 set /p DUMMY=Hit ENTER to exit...

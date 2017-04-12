@@ -2,7 +2,7 @@
 :
 : Rocket Software Confidential
 : OCO Source Materials
-: Copyright (C) Rocket Software. 2015
+: Copyright (C) Rocket Software. 2017
 : 
 :
 : @(:) $0 : script for importing a microsoft pfx file to a JKS store
@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxconv10
+: rem name pfxconv10
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -27,27 +27,25 @@ echo.  Extract entry from Java Keystore
 echo. +++++++++++++++++++++++++++++
 echo.      
 :
-::::scertmgr.cmd
-::set OPENSSL_CONF=c:\OpenSSL-Win32\openssl.cnf
-::set JRE_HOME=C:\Program Files\Java\jre1.8.0_25
-::set PATH=%JRE_HOME%\bin;%PATH%
+:jksName
+set /p jksname=Enter name for the Java Key Store : %jksname%
+IF "%jksname%"=="" goto ErrorjksName
+goto pfxfile
+:ErrorjksName
+echo Bad Input!!
+goto jksName
+:pfxfile
+set /p pfxfile=Enter name for the PFX file :  
+IF "%pfxfile%"=="" goto ErrorpfxFile
+goto nnext
+:ErrorpfxFile
+echo Bad Input!!
+goto pfxfile
 :
-::set /p INP4=Enter name for the PFX file :  
-::IF  NOT (%INP4%)==() (
-::set rootfile=%INP1%
-::) ELSE (
-::echo " bad input"
-::)
-set /p INP5=Enter name for the Java Key Store :  
-IF  NOT (%INP5%)==() (
-set jksfile=%INPUT%
-) ELSE (
-echo " bad input"
-)
-keytool -v -importkeystore -srckeystore %INP5% -srcstoretype PKCS12 -destkeystore %INP5%.jks -deststoretype JKS
-::::keytool -list -v -keystore %INP5%
+:nnext
+keytool -destkeystore %pfxfile%.pfx -v -importkeystore -srckeystore %jksname% -srcstoretype JKS  -deststoretype PKCS12
 echo.
-dir /B %INP5%*
+dir /B %pfxfile%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
 :EOF

@@ -38,7 +38,7 @@ goto rootName
 echo Bad Input!!
 goto pfxconv1
 :rootName
-set /p rootName=Enter new name for the server root certificate : %rootName%
+set /p rootName=Enter name for the server root certificate : %rootName%
 IF "%rootName%"=="" goto ErrorrootName
 goto pvtPass
 :ErrorrootName

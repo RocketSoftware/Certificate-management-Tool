@@ -2,7 +2,7 @@
 :
 : Rocket Software Confidential
 : OCO Source Materials
-: Copyright (C) Rocket Software. 2015
+: Copyright (C) Rocket Software. 2017
 : 
 :
 : @(:) $0 : certificate converter help
@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxhelp
+: rem name pfxhelp
 :
 :         for Windows 2008, 7, - 64 bit
 :           
