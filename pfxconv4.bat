@@ -2,7 +2,7 @@
 :
 : Rocket Software Confidential
 : OCO Source Materials
-: Copyright (C) Rocket Software. 2009, 2010, 2011, 2012, 2013
+: Copyright (C) Rocket Software. 2017
 : 
 :
 : @(:) $0 : script for importing a microsoft pfx file to a JKS store
@@ -28,24 +28,49 @@ echo. ++++++++++++++++++++++++++++++++++++++++
 echo.      
 :
 ::
-:pfxconv4
-set /p pfxfile=Enter name of the PFX file : %pfxfile%
-IF "%pfxfile%"=="" goto Errorpfxconv4
-goto jksName
-:Errorpfxconv4
-echo Bad Input!!
-goto pfxconv4
-:
 :jksName
+echo.Import DER/PEM or PFX Certificate into new of existing Java Key Store
 set /p jksname=Enter name for the Java Key Store : %jksname%
-IF "%jksname%"=="" goto Errorpfxconv4
-goto nnext
-:Errorpfxconv4
+IF "%jksname%"=="" goto ErrorjksName
+goto jksAlias
+:ErrorjksName
 echo Bad Input!!
 goto jksName
-:nnext
-keytool -v -importkeystore -srckeystore %pfxfile% -srcstoretype PKCS12 -destkeystore %jksname%.jks -deststoretype JKS
+:
+:jksAlias
+set /p jksalias=Java Key Store record alias name : %jksalias%
+IF "%jksalias%"=="" goto ErrorjksAlias
+goto certfile
+:ErrorjksAlias
+echo Bad Input!!
+goto jksAlias
+:
+:certfile
+set /p certfile=Enter name of the Certicate file : %certfile%
+IF "%certfile%"=="" goto Errorcerttype
+goto certtype
+:Errorcerttype
+echo Bad Input!!
+goto certfile
+:
+:certtype
+set /p certType="Certificate type? DER/PEM = 1 | PFX = 2 : "%certType%
+IF "%certType%"=="" goto Errorcerttype
+IF "%certType%"=="1" goto derpem
+IF "%certType%"=="2" goto pfx
+:Errorcerttype
+echo Bad Input!!
+goto certtype
+:
+:derpem
+keytool -import -alias %jksalias% -keystore %jksname% -file %certfile%
 echo.
+goto nnext
+:pfx
+keytool -v -importkeystore -srckeystore %certfile% -srcstoretype PKCS12 -destkeystore %jksname% -deststoretype JKS
+keytool -changealias -keystore %jksname% -alias 1 -destalias %jksalias%
+echo.
+:nnext
 dir /B %jksname%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
