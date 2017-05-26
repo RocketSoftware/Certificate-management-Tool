@@ -1,3 +1,8 @@
+:
+: Rocket Software Confidential
+: OCO Source Materials
+: Copyright (C) Rocket Software. 2017
+: 
 @ECHO OFF
 :cls
 :pfxconv12

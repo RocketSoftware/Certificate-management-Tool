@@ -1,3 +1,8 @@
+:
+: Rocket Software Confidential
+: OCO Source Materials
+: Copyright (C) Rocket Software. 2017
+: 
 @echo off
 set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
     $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^

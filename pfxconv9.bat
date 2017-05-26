@@ -2,7 +2,7 @@
 :
 : Rocket Software Confidential
 : OCO Source Materials
-: Copyright (C) Rocket Software. 2015
+: Copyright (C) Rocket Software. 2017
 : 
 :
 : @(:) $0 : script for converting pkcs#8 cert and pvtkey to pfx file
