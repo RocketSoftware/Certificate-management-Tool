@@ -4,7 +4,7 @@
 :
 : Rocket Software Confidential
 : OCO Source Materials
-: Copyright (C) Rocket Software. 2017
+: Copyright (C) Rocket Software. 2016, 2017
 : 
 :
 : @(:) $0 : script for converting a microsoft pfx file to pkcs#8 
