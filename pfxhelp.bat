@@ -27,35 +27,38 @@ for %%X in (openssl.exe) do (set FOUND=%%~$PATH:X)
 :pfxhelp
    echo.
    echo. openssl must be locally installed and acccesible for this script to work!
+   echo. openssl must be 1.0.2 or later. UDT 8.1.2 or UniVerse 11.2.5 or later
    echo.
    echo. Modify scertmgr.cmd file to reflect the correct location of PATH and JRE_HOME
+   echo. and OPENSSL_PATH
    echo. 
    echo. Your CMD session must be started with 'run as administrator'
    echo.
    echo. Run scertmgr.cmd prior to running pfxmenu.bat
    echo.
 set /p DUMMY=Hit ENTER to continue...
-ECHO.      ..........................................................
-ECHO.      .    Rocket Software Security Certificate Manager        .
-ECHO.      ..........................................................
-ECHO.      .                                                        .
-ECHO.      .  1 - PFX (PKCS#12) to PEM PKCS#8 Converter             .
-ECHO.      .  2 - PFX Certificate Store Converter                   .
-ECHO.      .  3 - PEM Server Certificate and Private Key to PFX     .
-ECHO.      .  4 - PFX Import into NEW or EXISTING Java Key Store    .
-ECHO.      .  5 - Create CSR and Self-Signed Certificate pfx & pem  .
-ECHO.      .  6 - View PFX File Contents                            .
-ECHO.      .  7 - PEM Chain Certificates and Private Key to PFX     .
-ECHO.      .  8 - SSL Test Client                                   .
-ECHO.      .  9 - SSL Test Server                                   .
-ECHO.      . 10 - View Java Keystore Contents                       .
-ECHO.      . 11 - Extract entry from Java Keystore into PFX         .
-ECHO.      . 12 - Check PEM certificate expiry                      .
-ECHO.      .  V - This tools Version                                .
-ECHO.      .  ? - Help README                                       .
-ECHO.      .  Q - EXIT                                              .
-ECHO.      ..........................................................
+ECHO.      ...............................................................
+ECHO.      .    Rocket Software Security Certificate Manager             .
+ECHO.      ...............................................................
+ECHO.      .                                                             .
+ECHO.      .  1 - PFX (PKCS#12) to PEM PKCS#8 Converter                  .
+ECHO.      .  2 - PFX Certificate Store Converter to PKCS#8 store        .
+ECHO.      .  3 - PEM Server Certificate and Private Key to PFX          .
+ECHO.      .  4 - DER/PEM/PFX Import into NEW or EXISTING Java Key Store .
+ECHO.      .  5 - Create CSR and Self-Signed Certificate (pfx or pem)    .
+ECHO.      .  6 - View PFX File Contents                                 .
+ECHO.      .  7 - PEM Chain Certificates and Private Key to PFX          .
+ECHO.      .  8 - SSL Test Client                                        .
+ECHO.      .  9 - SSL Test Server                                        .
+ECHO.      . 10 - View Java Keystore Contents                            .
+ECHO.      . 11 - Extract entry from Java Keystore into PFX              .
+ECHO.      . 12 - Check PEM certificate expiry                           .
+ECHO.      .  V - This tools Version                                     .
+ECHO.      .  ? - Help README                                            .
+ECHO.      .  Q - EXIT                                                   .
+ECHO.      ...............................................................
 ECHO.
+set /p DUMMY=Hit ENTER to continue...
    echo. Option (1) This option extracts and converts a pfx certificate 
    echo.            file with private key to pkcs#8 PEM format. 
    echo.            If a CA (signing) certificate is included in the pfx file, 
@@ -76,6 +79,7 @@ ECHO.
    echo.            store and populates the store with the contents of the pfx file.
    echo.            Passwords are required for the new or old java key store and to 
    echo.            extract the pfx file.
+set /p DUMMY=Hit ENTER to continue...
    echo. Option (5) This option Will create a password protected private key and  
    echo.            A certificate signing request (CSR). And if required this option
    echo.            will create a self signed certificate.

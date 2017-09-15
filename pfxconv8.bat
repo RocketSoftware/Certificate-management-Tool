@@ -46,7 +46,7 @@ goto secPort
 :SecPath
 set /p SecPath=Enter path of CA and intermediate certificates [%SecPath%]:
 IF  "%SecPath%"=="" goto ErrorsecPath
-goto secPath
+goto secOption
 :ErrorsecPath
 echo Bad input!!
 goto SecPath

@@ -20,33 +20,34 @@
 ::::::::::::::::::::::::::::::::::
 @ECHO OFF
 CLS
-set PFXTOOL_VERSION=2.10
-set OPENSSL_CONF=.\openssl.cnf
-set JRE_HOME=C:\Program Files\Java\jre1.8.0_45
-set PATH=%JRE_HOME%\bin;%PATH%
+set PFXTOOL_VERSION=2.11
+call scertmgr.cmd
+rem set OPENSSL_CONF=.\openssl.cnf
+rem set JRE_HOME=C:\Program Files\Java\jre1.8.0_121
+rem set PATH=%JRE_HOME%\bin;%PATH%
 set RANDFILE=.\.rnd
 :MENU
 ECHO.
-ECHO.      ..........................................................
-ECHO.      .    Rocket Software Security Certificate Manager        .
-ECHO.      ..........................................................
-ECHO.      .                                                        .
-ECHO.      .  1 - PFX (PKCS#12) to PEM PKCS#8 Converter             .
-ECHO.      .  2 - PFX Certificate Store Converter                   .
-ECHO.      .  3 - PEM Server Certificate and Private Key to PFX     .
-ECHO.      .  4 - PFX Import into NEW or EXISTING Java Key Store    .
-ECHO.      .  5 - Create CSR and Self-Signed Certificate PFX PEM    .
-ECHO.      .  6 - View PFX File Contents                            .
-ECHO.      .  7 - PEM Chain Certificates and Private Key to PFX     .
-ECHO.      .  8 - SSL Test Client                                   .
-ECHO.      .  9 - SSL Test Server                                   .
-ECHO.      . 10 - View Java Keystore Contents                       .
-ECHO.      . 11 - Extract entry from Java Keystore into PFX         .
-ECHO.      . 12 - Check PEM certificate expiry                      .
-ECHO.      .  V - This tools Version  %PFXTOOL_VERSION%                          .
-ECHO.      .  ? - Help README                                       .
-ECHO.      .  Q - EXIT                                              .
-ECHO.      ..........................................................
+ECHO.      ...............................................................
+ECHO.      .    Rocket Software Security Certificate Manager             .
+ECHO.      ...............................................................
+ECHO.      .                                                             .
+ECHO.      .  1 - PFX (PKCS#12) to PEM PKCS#8 Converter                  .
+ECHO.      .  2 - PFX Certificate Store Converter to PKCS#8 store        .
+ECHO.      .  3 - PEM Server Certificate and Private Key to PFX          .
+ECHO.      .  4 - DER/PEM/PFX Import into NEW or EXISTING Java Key Store .
+ECHO.      .  5 - Create CSR and Self-Signed Certificate (pfx or pem)    .
+ECHO.      .  6 - View PFX File Contents                                 .
+ECHO.      .  7 - PEM Chain Certificates and Private Key to PFX          .
+ECHO.      .  8 - SSL Test Client                                        .
+ECHO.      .  9 - SSL Test Server                                        .
+ECHO.      . 10 - View Java Keystore Contents                            .
+ECHO.      . 11 - Extract entry from Java Keystore into PFX              .
+ECHO.      . 12 - Check PEM certificate expiry                           .
+ECHO.      .  V - This tools Version                                     .
+ECHO.      .  ? - Help README                                            .
+ECHO.      .  Q - EXIT                                                   .
+ECHO.      ...............................................................
 ECHO.
 :
 SET /P M=Select task: 
@@ -127,8 +128,8 @@ CLS
 GOTO MENU
 :
 :EOF
-set PFXTOOL_VERSION=
-set OPENSSL_CONF=
-set JRE_HOME=
-set PATH=
-set RANDFILE=
+REM set PFXTOOL_VERSION=
+REM set OPENSSL_CONF=
+REM set JRE_HOME=
+REM set PATH=
+REM set RANDFILE=

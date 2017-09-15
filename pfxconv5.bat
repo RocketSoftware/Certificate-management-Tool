@@ -120,22 +120,37 @@ goto algoIN
 rem set age=365
 set /p age=Certificate Age limit [%age%]:
 IF  "%age%"=="" goto ErrorAge
-goto pvtPass
+goto pvtPass1
 :ErrorAge
 echo Bad input!!
 goto age
-:pvtPass
+:pvtPass1
 set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
     $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
         [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
-for /f "usebackq delims=" %%p in (`%psCommand%`) do set pvtPass=%%p
-IF "%pvtPass%"=="" goto ErrorpvtPass
-goto nnext
-:ErrorpvtPass
+for /f "usebackq delims=" %%p in (`%psCommand%`) do set pvtPass1=%%p
+IF "%pvtPass1%"=="" goto ErrorpvtPass1
+goto pvtPass2
+:ErrorpvtPass1
 echo Bad Input!!
-goto pvtPass
+goto pvtPass1
+:pvtPass2
+set "psCommand=powershell -Command "$pword = read-host 'Re-Enter Password' -AsSecureString ; ^
+    $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
+        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
+for /f "usebackq delims=" %%p in (`%psCommand%`) do set pvtPass2=%%p
+IF "%pvtPass2%"=="" goto ErrorpvtPass2
+IF not "%pvtPass1%"=="%pvtPass2%" goto ErrorpvtPassm
+goto nnext
+:ErrorpvtPass2
+echo Bad Input!!
+goto pvtPass2
+:ErrorpvtPassm
+echo Passwords Don't match!!
+goto pvtPass1
 :nnext
 echo.
+echo Passwords match!!
 pause
 echo. 
 echo Country = %country%
@@ -147,28 +162,28 @@ echo Common Name = %domname%
 echo Email Adress = %email%
 echo Algorithm = %algo%
 echo Certificate Age = %age%
-rem echo Private Key password = %pvtPass%
+rem echo Private Key password = %pvtPass1%
 echo.
 :
 echo                 If list above is ok, hit (y) or (n) to go back!
 set INPUT=
-set /P INPUT=Type input: %=%
+set /P INPUT=Enter (y) or (n): %=%
 If /I "%INPUT%"=="y" goto pfxcont 
 If /I "%INPUT%"=="n" goto pfxconv5
 :
 :pfxcont
 echo.
-   openssl.exe pkcs8 -v1 PBE-SHA1-3DES -topk8 -in %pfxfile%.rsa -out %pfxfile%.pvt
+   openssl.exe pkcs8 -v1 PBE-SHA1-3DES -topk8 -in %pfxfile%.rsa -out %pfxfile%.pvt -passin pass:%pvtPass1%
 :
-  openssl req -new -%algo% -subj "/C=%country%/ST=%state%/L=%city%/O=%orgname%/CN=%domname%/emailAddress=%email%/OU=%unit%" -key %pfxfile%.pvt -out %pfxfile%.req -passin pass:%pvtPass%
-   openssl req -text -noout -verify -in %pfxfile%.req
+  openssl req -new -%algo% -subj "/C=%country%/ST=%state%/L=%city%/O=%orgname%/CN=%domname%/emailAddress=%email%/OU=%unit%" -key %pfxfile%.pvt -out %pfxfile%.req -passin pass:%pvtPass1%
+  openssl req -text -noout -verify -in %pfxfile%.req
 :
 set /p INP11=Do you want to create a self-signed certificate [y/n]:
 IF  %INP11%==y (
 openssl x509 -%algo% -signkey %pfxfile%.pvt -in %pfxfile%.req -req -days %age% -out %pfxfile%.cer 
 :
 echo "Private Key and CSR and self-signed certificate created!"
-openssl pkcs12 -passin pass:%pvtPass% -export -out %pfxfile%.pfx -inkey %pfxfile%.pvt -in %pfxfile%.cer
+openssl pkcs12 -passin pass:%pvtPass1% -export -out %pfxfile%.pfx -inkey %pfxfile%.pvt -in %pfxfile%.cer
 echo "Self-signed PFX certificate created!" 
 ) ELSE (
 echo.The following files were created:
@@ -184,17 +199,18 @@ echo.The following files were created:
 echo.================================================================
 echo.
 dir /B %pfxfile%*
-set pfxfile=
-set country=
-set state=
-set city=
-set orgname=
-set unit=
-set domname=
-set email=
-set algoIN=
-set age=
-set pvtPass=
+REM set pfxfile=
+REM set country=
+REM set state=
+REM set city=
+REM set orgname=
+REM set unit=
+REM set domname=
+REM set email=
+REM set algoIN=
+REM set age=
+REM set pvtPass1=
+REM set pvtPass2=
 :END
 :echo.
 echo "Task Completed"
