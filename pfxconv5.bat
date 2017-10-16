@@ -34,7 +34,7 @@ echo.
 rem set pfxfile=mytest
 ::
 :pfxconv5
-set /p pfxfile=Enter name and path of the CSR file : %pfxfile%
+set /p pfxfile=Enter name and path of the CSR file (.req will be added) : %pfxfile%
 IF "%pfxfile%"=="" goto Errorpfxconv5
 goto rsa
 :Errorpfxconv5
@@ -173,7 +173,8 @@ If /I "%INPUT%"=="n" goto pfxconv5
 :
 :pfxcont
 echo.
-   openssl.exe pkcs8 -v1 PBE-SHA1-3DES -topk8 -in %pfxfile%.rsa -out %pfxfile%.pvt -passin pass:%pvtPass1%
+:   openssl.exe pkcs8 -v1 PBE-SHA1-3DES -topk8 -in %pfxfile%.rsa -out %pfxfile%.pvt -passin pass:%pvtPass1%
+   openssl.exe pkcs8 -topk8 -in %pfxfile%.rsa -out %pfxfile%.pvt -passin pass:%pvtPass1%
 :
   openssl req -new -%algo% -subj "/C=%country%/ST=%state%/L=%city%/O=%orgname%/CN=%domname%/emailAddress=%email%/OU=%unit%" -key %pfxfile%.pvt -out %pfxfile%.req -passin pass:%pvtPass1%
   openssl req -text -noout -verify -in %pfxfile%.req

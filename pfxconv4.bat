@@ -30,7 +30,7 @@ echo.
 ::
 :jksName
 echo.Import DER/PEM or PFX Certificate into new of existing Java Key Store
-set /p jksname=Enter name for the Java Key Store : %jksname%
+set /p jksname=Enter name for the Java Key Store (.jks will be added) : %jksname%
 IF "%jksname%"=="" goto ErrorjksName
 goto jksAlias
 :ErrorjksName
@@ -63,12 +63,12 @@ echo Bad Input!!
 goto certtype
 :
 :derpem
-keytool -import -alias %jksalias% -keystore %jksname% -file %certfile%
+keytool -import -alias %jksalias% -keystore %jksname%.jks -file %certfile%
 echo.
 goto nnext
 :pfx
-keytool -v -importkeystore -srckeystore %certfile% -srcstoretype PKCS12 -destkeystore %jksname% -deststoretype JKS
-keytool -changealias -keystore %jksname% -alias 1 -destalias %jksalias%
+keytool -v -importkeystore -srckeystore %certfile% -srcstoretype PKCS12 -destkeystore %jksname%.jks -deststoretype JKS
+keytool -changealias -keystore %jksname%.jks -alias 1 -destalias %jksalias%
 echo.
 :nnext
 dir /B %jksname%*
