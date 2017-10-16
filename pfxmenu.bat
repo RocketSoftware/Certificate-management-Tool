@@ -29,7 +29,7 @@ set RANDFILE=.\.rnd
 :MENU
 ECHO.
 ECHO.      ...............................................................
-ECHO.      .    Rocket Software Security Certificate Manager             .
+ECHO.      .    Rocket Software Certificate Management Tool             .
 ECHO.      ...............................................................
 ECHO.      .                                                             .
 ECHO.      .  1 - PFX (PKCS#12) to PEM PKCS#8 Converter                  .
