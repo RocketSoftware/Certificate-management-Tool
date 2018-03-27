@@ -5,13 +5,13 @@
 : Copyright (C) Rocket Software. 2017
 : 
 :
-: @(:) $0 : MS exported certificate store pfx file to pkcs#8 file 
+: @(:) $0 : script for converting pkcs#8 cert and pvtkey to pfx file
 :           for a U2 DB system
 :	by : Nik Kesic
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-: rem name pfxconv2
+:     pfxconv2
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -22,43 +22,47 @@
 :
 cls
 :
-echo. +++++++++++++++++++++++++++++++++
-echo.  PFX Certificate Store Converter
-echo. +++++++++++++++++++++++++++++++++
+echo. +++++++++++++++++
+echo.  SSL Test Server
+echo. +++++++++++++++++
 echo.      
 :
-:pfxconv2
-set /p pfxfile=Enter name of the PFX file : %pfxfile%
-IF "%pfxfile%"=="" goto Errorpfxconv1
-goto rootName
-:Errorpfxconv1
-echo Bad Input!!
-goto pfxconv2
+set INPUT=""
+:port
+set /p INP2=Enter port of secure server :  
+
+IF  (%INP2%)==() (
+ECHO You did not enter port number!!
+timeout 30
+goto EOF
+)
 :
-:rootName
-set /p rootName=Enter name for the server root certificate : %rootName%
-IF "%rootName%"=="" goto ErrorrootName
-goto pvtPass
-:ErrorrootName
-echo Bad Input!!
-goto rootName
-:
-:pvtPass
-set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
-    $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
-        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
-for /f "usebackq delims=" %%p in (`%psCommand%`) do set pvtPass=%%p
-IF "%pvtPass%"=="" goto ErrorpvtPass
-goto nnext
-:ErrorpvtPass
-echo Bad Input!!
-goto pvtPass
-:nnext
-:
-openssl pkcs12 -cacerts -in %pfxfile% -nodes -out %rootName% -passin pass:%pvtPass%
-:END
+
+set /p INP3=Enter path and name of server certificate :  
+IF  (%INP3%)==() (
+ECHO You did not enter a certificate!!
+timeout 30
+goto EOF
+)
+set /p INP4=Enter path and name of private key :  
+IF  (%INP4%)==() (
+ECHO You did not enter a private key!!
+timeout 30
+goto EOF
+)
+set /p INP5=Enter any other options or "<cr>" :  
+IF  (%INP5%)==() (
+set INP5=%INPUT%
+) ELSE (
+echo " bad input"
+)
+echo openssl s_server -www -accept %INP2% -cert %INP3% -key %INP4% %INP5%
+openssl s_server -accept %INP2% -cert %INP3% -key %INP4%
+
+
 echo.
+::dir /B %INP6%*
 SET /P M= Any key to exit : 
-IF %M%== GOTO EOF
+::IF %M%== GOTO EOF
 :EOF
 exit

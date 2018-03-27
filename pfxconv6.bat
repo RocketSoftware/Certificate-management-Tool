@@ -5,7 +5,7 @@
 : Copyright (C) Rocket Software. 2017
 : 
 :
-: @(:) $0 : MS exported certificate store pfx file to pkcs#8 file 
+: @(:) $0 : script for converting pkcs#8 cert and pvtkey to pfx file
 :           for a U2 DB system
 :	by : Nik Kesic
 :	   : U2 Support Denver - USA
@@ -22,24 +22,47 @@
 :
 cls
 :
-echo. ++++++++++++++++++++++++
-echo.  View PFX File Contents
-echo. ++++++++++++++++++++++++
+echo. +++++++++++++++++++++++++++++++++++++++++++++++
+echo.  PEM Server Certificate and Private Key to PFX
+echo. +++++++++++++++++++++++++++++++++++++++++++++++
 echo.      
 :
 :pfxconv6
-set /p pfxfile=Enter name of the PFX file : %pfxfile%
-IF "%pfxfile%"=="" goto Errorpfxconv6
-goto nnext
-:Errorpfxconv6
+set /p pemfile=Enter name of the PEM Certificate file : %pemfile%
+IF "%pemfile%"=="" goto ErrorpemFile
+goto pvtfile
+:ErrorpemFile
 echo Bad Input!!
 goto pfxconv6
 :
-:nnext
-openssl pkcs12 -info -in %pfxfile% 
+:pvtfile
+set /p pvtfile=Enter name of the Private Key file : %pvtfile%
+IF "%pvtfile%"=="" goto ErrorpvtFile
+goto cafile
+:ErrorpvtFile
+echo Bad Input!!
+goto pvtfile
 :
+:cafile
+set /p cafile=Enter name of the CAfile file :  
+IF "%cafile%"=="" goto ErrorcaFile
+goto pfxfile
+:ErrorcaFile
+set cafile=%pemfile%
+:
+:pfxfile
+set /p pfxfile=Enter name for the PFX file :  
+IF "%pfxfile%"=="" goto ErrorpfxFile
+goto nnext
+:ErrorpfxFile
+echo Bad Input!!
+goto pfxfile
+:
+:nnext
+openssl pkcs12 -export -out %pfxfile% -inkey %pvtfile% -in %pemfile% -cacerts -in %cafile% 
 echo.
+dir /B %pfxfile%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
-:EOF
+EOF
 exit

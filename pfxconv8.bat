@@ -5,13 +5,13 @@
 : Copyright (C) Rocket Software. 2017
 : 
 :
-: @(:) $0 : script for converting pkcs#8 cert and pvtkey to pfx file
+: @(:) $0 : MS exported certificate store pfx file to pkcs#8 file 
 :           for a U2 DB system
 :	by : Nik Kesic
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:  rem name pfxconv8
+: rem name pfxconv8
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -22,48 +22,43 @@
 :
 cls
 :
-echo. +++++++++++++++++
-echo.  SSL Test Client
-echo. +++++++++++++++++
+echo. +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.  PFX (PKCS#12) Certificate Store Converter to PKCS#8 store
+echo. +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.      
 :
-:secServ
-set /p secServ=Enter name of secure server [%secServ%]:
-IF  "%secServ%"=="" goto ErrorsecServ
-goto secPort
-:ErrorsecServ
-echo Bad input!!
-goto secServ
+:pfxconv8
+set /p pfxfile=Enter name of the PFX file : %pfxfile%
+IF "%pfxfile%"=="" goto Errorpfxconv1
+goto rootName
+:Errorpfxconv1
+echo Bad Input!!
+goto pfxconv8
 :
-:secPort
-set /p secPort=Enter port of secure server [%secPort%]:
-IF  "%secPort%"=="" goto ErrorsecPort
-goto secPath
-:ErrorsecPort
-echo Bad input!!
-goto secPort
+:rootName
+set /p rootName=Enter name for the server root certificate : %rootName%
+IF "%rootName%"=="" goto ErrorrootName
+goto pvtPass
+:ErrorrootName
+echo Bad Input!!
+goto rootName
 :
-:SecPath
-set /p SecPath=Enter path of CA and intermediate certificates [%SecPath%]:
-IF  "%SecPath%"=="" goto ErrorsecPath
-goto secOption
-:ErrorsecPath
-echo Bad input!!
-goto SecPath
-:
-:secOption
-set /p INP4=Enter any other openssl options or "<cr>" :  
-rem IF  (%INP4%)==() (
-rem set INP4=%INPUT%
-rem ) ELSE (
-rem echo " bad input"
-rem )
-:
+:pvtPass
+set "psCommand=powershell -Command "$pword = read-host 'Enter Password' -AsSecureString ; ^
+    $BSTR=[System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword); ^
+        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)""
+for /f "usebackq delims=" %%p in (`%psCommand%`) do set pvtPass=%%p
+IF "%pvtPass%"=="" goto ErrorpvtPass
+goto nnext
+:ErrorpvtPass
+echo Bad Input!!
+goto pvtPass
 :nnext
-echo openssl s_client -connect %secServ%:%secPort% -showcerts -CApath %secPath% %secOption%
-openssl s_client -connect %secServ%:%secPort% -showcerts -CApath %secPath% %secOption%
 :
+openssl pkcs12 -cacerts -in %pfxfile% -nodes -out %rootName% -passin pass:%pvtPass%
+:END
 echo.
 SET /P M= Any key to exit : 
+IF %M%== GOTO EOF
 :EOF
 exit

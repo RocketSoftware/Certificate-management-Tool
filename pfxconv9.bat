@@ -5,13 +5,13 @@
 : Copyright (C) Rocket Software. 2017
 : 
 :
-: @(:) $0 : script for converting pkcs#8 cert and pvtkey to pfx file
+: @(:) $0 : script for importing a microsoft pfx file to a JKS store
 :           for a U2 DB system
 :	by : Nik Kesic
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-:     pfxconv9
+: rem name pfxconv9
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -22,47 +22,57 @@
 :
 cls
 :
-echo. +++++++++++++++++
-echo.  SSL Test Server
-echo. +++++++++++++++++
+echo. ++++++++++++++++++++++++++++++++++++++++
+echo.  PFX Import into NEW/OLD Java Key Store
+echo. ++++++++++++++++++++++++++++++++++++++++
 echo.      
 :
-set INPUT=""
-:port
-set /p INP2=Enter port of secure server :  
-
-IF  (%INP2%)==() (
-ECHO You did not enter port number!!
-timeout 30
-goto EOF
-)
+::
+:jksName
+echo.Import DER/PEM or PFX Certificate into new of existing Java Key Store
+set /p jksname=Enter name for the Java Key Store (.jks will be added) : %jksname%
+IF "%jksname%"=="" goto ErrorjksName
+goto jksAlias
+:ErrorjksName
+echo Bad Input!!
+goto jksName
 :
-
-set /p INP3=Enter path and name of server certificate :  
-IF  (%INP3%)==() (
-ECHO You did not enter a certificate!!
-timeout 30
-goto EOF
-)
-set /p INP4=Enter path and name of private key :  
-IF  (%INP4%)==() (
-ECHO You did not enter a private key!!
-timeout 30
-goto EOF
-)
-set /p INP5=Enter any other options or "<cr>" :  
-IF  (%INP5%)==() (
-set INP5=%INPUT%
-) ELSE (
-echo " bad input"
-)
-echo openssl s_server -www -accept %INP2% -cert %INP3% -key %INP4% %INP5%
-openssl s_server -accept %INP2% -cert %INP3% -key %INP4%
-
-
+:jksAlias
+set /p jksalias=Java Key Store record alias name : %jksalias%
+IF "%jksalias%"=="" goto ErrorjksAlias
+goto certfile
+:ErrorjksAlias
+echo Bad Input!!
+goto jksAlias
+:
+:certfile
+set /p certfile=Enter name of the Certicate file : %certfile%
+IF "%certfile%"=="" goto Errorcerttype
+goto certtype
+:Errorcerttype
+echo Bad Input!!
+goto certfile
+:
+:certtype
+set /p certType="Certificate type? DER/PEM = 1 | PFX = 2 : "%certType%
+IF "%certType%"=="" goto Errorcerttype
+IF "%certType%"=="1" goto derpem
+IF "%certType%"=="2" goto pfx
+:Errorcerttype
+echo Bad Input!!
+goto certtype
+:
+:derpem
+keytool -import -alias %jksalias% -keystore %jksname%.jks -file %certfile%
 echo.
-::dir /B %INP6%*
+goto nnext
+:pfx
+keytool -v -importkeystore -srckeystore %certfile% -srcstoretype PKCS12 -destkeystore %jksname%.jks -deststoretype JKS
+keytool -changealias -keystore %jksname%.jks -alias 1 -destalias %jksalias%
+echo.
+:nnext
+dir /B %jksname%*
 SET /P M= Any key to exit : 
-::IF %M%== GOTO EOF
+IF %M%== GOTO EOF
 :EOF
 exit

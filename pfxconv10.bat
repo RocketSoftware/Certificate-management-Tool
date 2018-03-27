@@ -5,7 +5,7 @@
 : Copyright (C) Rocket Software. 2017
 : 
 :
-: @(:) $0 : script for importing a microsoft pfx file to a JKS store
+: @(:) $0 : MS exported certificate store pfx file to pkcs#8 file 
 :           for a U2 DB system
 :	by : Nik Kesic
 :	   : U2 Support Denver - USA
@@ -22,23 +22,44 @@
 :
 cls
 :
-echo. +++++++++++++++++++++++++++++
-echo.  View Java Keystore Contents
-echo. +++++++++++++++++++++++++++++
-echo.      
+echo. ++++++++++++++++++++++++++++++++++
+echo.  View PFX (PKCS#12) File Contents
+echo. ++++++++++++++++++++++++++++++++++
+echo. 
 :
-:jksName
-set /p jksname=Enter name for the Java Key Store : %jksname%
-IF "%jksname%"=="" goto ErrorjksName
-goto nnext
-:ErrorjksName
+:
+:pfxdir
+set /p workdir=Enter path\name of the work directory : %workdir%
+IF "%workdir%"=="" goto Errorpfxdir
+IF EXIST %workdir% (
+goto pfxconv10
+) ELSE (
+Echo Error opening file: %workdir%
+set workdir=
+goto pfxdir
+)
+:Errorpfxdir
 echo Bad Input!!
-goto jksName
+goto pfxdir     
+:
+:pfxconv10
+set /p pfxfile=Enter name of the PFX file : %pfxfile%
+IF "%pfxfile%"=="" goto Errorpfxconv10
+IF EXIST %workdir%\%pfxfile% (
+goto nnext
+) ELSE (
+Echo Error opening file: %pfxfile%
+set pfxfile=
+goto pfxconv10
+)
+:Errorpfxconv1
+echo Bad Input!!
+goto pfxconv10
 :
 :nnext
-keytool -list -v -keystore %jksname%
+openssl pkcs12 -info -in %workdir%\%pfxfile% 
+:
 echo.
-dir /B %jksname%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
 :EOF

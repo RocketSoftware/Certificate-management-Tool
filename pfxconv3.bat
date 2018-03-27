@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-: rem name pfxconv3
+:  rem name pfxconv3
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -22,47 +22,48 @@
 :
 cls
 :
-echo. +++++++++++++++++++++++++++++++++++++++++++++++
-echo.  PEM Server Certificate and Private Key to PFX
-echo. +++++++++++++++++++++++++++++++++++++++++++++++
+echo. +++++++++++++++++
+echo.  SSL Test Client
+echo. +++++++++++++++++
 echo.      
 :
-:pfxconv3
-set /p pemfile=Enter name of the PEM Certificate file : %pemfile%
-IF "%pemfile%"=="" goto ErrorpemFile
-goto pvtfile
-:ErrorpemFile
-echo Bad Input!!
-goto pfxconv3
+:secServ
+set /p secServ=Enter name of secure server [%secServ%]:
+IF  "%secServ%"=="" goto ErrorsecServ
+goto secPort
+:ErrorsecServ
+echo Bad input!!
+goto secServ
 :
-:pvtfile
-set /p pvtfile=Enter name of the Private Key file : %pvtfile%
-IF "%pvtfile%"=="" goto ErrorpvtFile
-goto cafile
-:ErrorpvtFile
-echo Bad Input!!
-goto pvtfile
+:secPort
+set /p secPort=Enter port of secure server [%secPort%]:
+IF  "%secPort%"=="" goto ErrorsecPort
+goto secPath
+:ErrorsecPort
+echo Bad input!!
+goto secPort
 :
-:cafile
-set /p cafile=Enter name of the CAfile file :  
-IF "%cafile%"=="" goto ErrorcaFile
-goto pfxfile
-:ErrorcaFile
-set cafile=%pemfile%
+:SecPath
+set /p SecPath=Enter path of CA and intermediate certificates [%SecPath%]:
+IF  "%SecPath%"=="" goto ErrorsecPath
+goto secOption
+:ErrorsecPath
+echo Bad input!!
+goto SecPath
 :
-:pfxfile
-set /p pfxfile=Enter name for the PFX file :  
-IF "%pfxfile%"=="" goto ErrorpfxFile
-goto nnext
-:ErrorpfxFile
-echo Bad Input!!
-goto pfxfile
+:secOption
+set /p INP4=Enter any other openssl options or "<cr>" :  
+rem IF  (%INP4%)==() (
+rem set INP4=%INPUT%
+rem ) ELSE (
+rem echo " bad input"
+rem )
 :
 :nnext
-openssl pkcs12 -export -out %pfxfile% -inkey %pvtfile% -in %pemfile% -cacerts -in %cafile% 
+echo openssl s_client -connect %secServ%:%secPort% -showcerts -CApath %secPath% %secOption%
+openssl s_client -connect %secServ%:%secPort% -showcerts -CApath %secPath% %secOption%
+:
 echo.
-dir /B %pfxfile%*
 SET /P M= Any key to exit : 
-IF %M%== GOTO EOF
-EOF
+:EOF
 exit

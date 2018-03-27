@@ -11,7 +11,7 @@
 :	   : U2 Support Denver - USA
 : Synopsis:
 :
-: rem name pfxconv10
+: rem name pfxconv11
 :
 :         for Windows 2008, 7, - 64 bit
 :           
@@ -23,29 +23,22 @@
 cls
 :
 echo. +++++++++++++++++++++++++++++
-echo.  Extract entry from Java Keystore 
+echo.  View Java Keystore Contents
 echo. +++++++++++++++++++++++++++++
 echo.      
 :
 :jksName
 set /p jksname=Enter name for the Java Key Store : %jksname%
 IF "%jksname%"=="" goto ErrorjksName
-goto pfxfile
+goto nnext
 :ErrorjksName
 echo Bad Input!!
 goto jksName
-:pfxfile
-set /p pfxfile=Enter name for the PFX file :  
-IF "%pfxfile%"=="" goto ErrorpfxFile
-goto nnext
-:ErrorpfxFile
-echo Bad Input!!
-goto pfxfile
 :
 :nnext
-keytool -destkeystore %pfxfile%.pfx -v -importkeystore -srckeystore %jksname% -srcstoretype JKS  -deststoretype PKCS12
+keytool -list -v -keystore %jksname%
 echo.
-dir /B %pfxfile%*
+dir /B %jksname%*
 SET /P M= Any key to exit : 
 IF %M%== GOTO EOF
 :EOF
